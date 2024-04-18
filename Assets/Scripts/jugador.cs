@@ -3,6 +3,7 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class Jugador : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class Jugador : MonoBehaviour
     Vector3 posicionInicial;
     int vidas = 3;
     int monedas = 0;
+    public static int win = 0;
     bool salidaJugador;
     public AudioSource audioMonedas;
     public AudioSource audioEnemigos;
@@ -22,6 +24,7 @@ public class Jugador : MonoBehaviour
     public TextMeshProUGUI textoGanaste;
     public TextMeshProUGUI textoVidas;
     public TextMeshProUGUI textoPerdiste;
+    public TextMeshProUGUI textoTiempo;
     // Start is called before the first frame update
     void Start()
     {
@@ -29,6 +32,7 @@ public class Jugador : MonoBehaviour
         posicionInicial = transform.position;
         textoGanaste.enabled = false;
         textoPerdiste.enabled = false;
+        textoTiempo.enabled = true;
         salidaJugador = false;
     }
 
@@ -50,9 +54,12 @@ public class Jugador : MonoBehaviour
         {
             salidaJugador = true;
             textoGanaste.enabled=true;
+            win = 1;
             miRigidbody.velocity = Vector3.zero;
             miRigidbody.angularVelocity = Vector3.zero;
             audioGanaste.Play();
+            textoTiempo.enabled=false;
+
             //Debug.Log("LO LOGRASTE, GANASTE, recogiste "+ monedas+" monedas") ;
         }
         else if (other.CompareTag("enemigo"))
@@ -61,16 +68,19 @@ public class Jugador : MonoBehaviour
             miRigidbody.MovePosition(posicionInicial);
             miRigidbody.velocity= Vector3.zero;
             miRigidbody.angularVelocity= Vector3.zero;
+            monedas = 0;
             textoMonedas.text = "Monedas: 0";
             vidas = vidas - 1;
             textoVidas.text = "Vidas = " + vidas;
             if (vidas == 0)
             {
                 salidaJugador = true;
-                textoPerdiste.enabled = true;
-                audioPerdiste.Play();
+                //textoPerdiste.enabled = true;
+                //audioPerdiste.Play();
+                SceneManager.LoadScene(0);
                 miRigidbody.velocity = Vector3.zero;
                 miRigidbody.angularVelocity = Vector3.zero;
+                
             }
         }
         else if (other.CompareTag("moneda"))
